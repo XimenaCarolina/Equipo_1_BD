@@ -7,7 +7,6 @@ A continuación se detalla el esquema relacional derivado del diagrama Entidad-R
 * *`cursiva`*: Llave Foránea (FK - Foreign Key).
 * ***`negrita_cursiva`***: Atributo que forma parte de la Llave Primaria y al mismo tiempo es Llave Foránea.
 
-
 ---
 
 ### 1. Entidades Principales (Independientes)
