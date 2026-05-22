@@ -1,8 +1,5 @@
-# Diseño de Base de Datos - Sistema de Gestión Restaurantera 🍽️
 
-Este repositorio contiene el modelado arquitectónico, el diagrama Entidad-Relación Extendido (EER) y la documentación de la base de datos para el sistema de un restaurante. El diseño optimiza la gestión del personal, el control del menú (consumibles) y el flujo transaccional de las órdenes.
-
-## Arquitectura del Modelo (EER)
+## Arquitectura del Modelo (EER) !! ULTIMA ACUTALIZACIÓN 22/05/2006 12:47
 
 El esquema de la base de datos resuelve requerimientos operativos complejos mediante las siguientes estructuras:
 
