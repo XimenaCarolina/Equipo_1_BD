@@ -1,4 +1,4 @@
-# Equipo_1_BD
+# Equipo_Normalizados_BD
 Proyecto Final
 
 Integrantes:
