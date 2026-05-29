@@ -1,0 +1,25 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="MODELO_RELACIONAL_FINAL" id="A86929A4-15F6-7B25-FF8F-113EF01C6B76" version="3.5">
+<createdBy>Kikaa</createdBy>
+<createdTime>2026-05-27 14:18:19 UTC</createdTime>
+<ownerDesignName>MODELO_RELACIONAL_FINAL</ownerDesignName>
+<capitalNames>false</capitalNames>
+<designId>A86929A4-15F6-7B25-FF8F-113EF01C6B76</designId>
+<usedDesignStorageDescriptors>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="E896EFCE-1E81-E1F6-28D8-6646D8384816">
+<designStoragePath>C:\RestauranteVer1</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="D7B2DC62-751E-C6C6-9F5B-641C548C1C7E">
+<designStoragePath>C:\RestauranteVer1</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="BD781B90-21B4-D74C-778D-D973B3745E03">
+<designStoragePath>C:\RestauranteVer1</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="B3FB7C2F-69DB-A088-66CC-78160AB10026">
+<designStoragePath>C:\RestauranteVer1</designStoragePath>
+</designDescr>
+<designDescr class="oracle.dbtools.crest.model.design.Design$DesignStorageDesc" id="4118BC72-9482-545E-C9D8-8DA888BAA44F">
+<designStoragePath>C:\RestauranteVer1</designStoragePath>
+</designDescr>
+</usedDesignStorageDescriptors>
+</OSDM_Design>
