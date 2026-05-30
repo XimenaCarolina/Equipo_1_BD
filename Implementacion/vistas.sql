@@ -19,7 +19,7 @@
         END AS nombre_cliente_completo,
         c.calle, c.numero, c.colonia, c.cp, c.estado,
         c.email,
-        o.folio,
+        'ORD-' || o.folio,
         o.fecha,
         o.total_pagar,
         p.monto_pago
