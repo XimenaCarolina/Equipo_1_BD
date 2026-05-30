@@ -195,7 +195,7 @@ CREATE TABLE cliente (
         UNIQUE (rfc),
 
     CONSTRAINT chk_cliente_tipo
-        CHECK (tipo_cliente IN ('FISICA', 'MORAL')),
+        CHECK (tipo_cliente IN ('FISICA', 'MORAL'))
 );
 
 CREATE TABLE persona_fisica (
