@@ -2,18 +2,9 @@
    INSERTS ADAPTADOS - RESTAURANTE CON MENÚ OLIVE GARDEN
    Base: DDL PostgreSQL Restaurante
    Ejecutar DESPUÉS de crear las tablas.
-
-   Nota importante:
-   En el DDL original, cliente.razon_social es VARCHAR(130).
-   El nombre completo solicitado para Teodora mide más de 130 caracteres,
-   por eso se amplía la columna antes de insertar.
    ============================================================ */
 
 BEGIN;
-
--- Ajuste necesario para guardar completa la razón social de Teodora.
-ALTER TABLE cliente
-ALTER COLUMN razon_social TYPE VARCHAR(180);
 
 /* ============================================================
    1) EMPLEADOS
@@ -60,9 +51,9 @@ INSERT INTO telefono_empleado (num_empleado, telefono) VALUES
 
 /* ============================================================
    3) SUBTIPOS DE EMPLEADO
-   Especialización parcial y traslapada según el DDL.
-   Se dividen los pilotos entre meseros, cocineros y administrativos.
-   Algunos se repiten para mostrar traslape.
+   Especialización parcial y traslapada.
+   Se dividen los pilotos entre meseros, cocineros y administrativos y 
+   algunos se repiten para mostrar traslape.
    ============================================================ */
 
 INSERT INTO mesero (num_empleado, horario) VALUES
@@ -109,7 +100,6 @@ INSERT INTO dependiente (num_empleado, id_dependiente, nombre, parentesco, curp)
 
 /* ============================================================
    5) CLIENTES
-   Incluye los nombres de la tabla de integrantes enviada.
    ============================================================ */
 
 INSERT INTO cliente
@@ -121,7 +111,7 @@ VALUES
 (4,  'Ximena Carolina', 'Cruz',         'Basilio',    'CRBA010101MX4', 'Ximena Carolina Cruz Basilio', '2001-04-04', 'ximena.cruz@example.com', 'Pilares',        '400', 'Narvarte',    '03020', 'CDMX'),
 (5,  'Rodrigo',         'Jardón',       'Marín',      'JAMA010101MX5', 'Rodrigo Jardón Marín', '2001-05-05', 'rodrigo.jardon@example.com',      'Chiapas',        '500', 'Roma Norte',  '06700', 'CDMX'),
 (6,  'Héctor Emilio',   'Parra',        'Fernández',  'PAFE010101MX6', 'Héctor Emilio Parra Fernández', '2001-06-06', 'hector.parra@example.com', 'Puebla',         '600', 'Condesa',     '06140', 'CDMX'),
-(7,  'Teodora Vicenta', 'Villavicencio','Oraverás',   'VIOT010101MX7', 'Teodora Vicenta de la Purísima Concepción de la Inmaculada Trinidad Villavicencio, Duquesa de Oraverás, Marquesa del Jujuy y Niña de la Condesa', '1988-07-07', 'teodora.villavicencio@example.com', 'Palmas', '700', 'Polanco', '11550', 'CDMX'),
+(7,  'Teodora Vicenta', 'Villavicencio','Oraverás',   'VIOT010101MX7', 'Teodora Vicenta Villavicencio Oraverás', '1988-07-07', 'teodora.villavicencio@example.com', 'Palmas', '700', 'Polanco', '11550', 'CDMX'),
 (8,  'María Fernanda',  'Gómez',        'López',      'GOLO010101MX8', 'María Fernanda Gómez López', '1999-08-08', 'maria.gomez@example.com',        'Madero',         '80',  'Centro',      '06000', 'CDMX'),
 (9,  'Diego',           'Martínez',     'Santos',     'MASA010101MX9', 'Diego Martínez Santos', '1998-09-09', 'diego.martinez@example.com',      'Bolívar',        '90',  'Obrera',      '06800', 'CDMX'),
 (10, 'Valeria',         'Hernández',    'Ríos',       'HERI010101MX0', 'Valeria Hernández Ríos', '2000-10-10', 'valeria.hernandez@example.com',   'Sonora',         '10',  'Roma Sur',    '06760', 'CDMX'),
@@ -217,8 +207,8 @@ INSERT INTO orden (folio, num_mesero, fecha, total_pagar) VALUES
 
 /* ============================================================
    9) DETALLE_ORDEN
-   El subtotal_prod ya NO se inserta manualmente.
-   Lo calcula automáticamente el trigger fn_calcular_subtotal().
+   El subtotal_prod NO se inserta manualmente, 
+   lo calcula automáticamente el trigger fn_calcular_subtotal().
    Después de cada INSERT, el trigger fn_actualizar_totalOrden()
    actualiza automáticamente orden.total_pagar.
    ============================================================ */
