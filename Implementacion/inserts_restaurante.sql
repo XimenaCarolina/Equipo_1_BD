@@ -56,19 +56,12 @@ INSERT INTO telefono_empleado (num_empleado, telefono) VALUES
    algunos se repiten para mostrar traslape.
    ============================================================ */
 
-1. Registro de los meseros
+-------1. Registro de los meseros
 INSERT INTO mesero (num_empleado) VALUES
-(1),
-(2),
-(3),
-(4),
-(5),
-(6),
-(7),
-(21);
+(1),(2),(3),(4),(5),(6),(7),(21);
 
 -- 2. Asignación de horarios estructurados
-INSERT INTO horario_mesero (num_empleado, dia_semana, hora_entrada, hora_salida) VALUES
+INSERT INTO horario_mesero (num_empleado, dia_semana, hora_inicio, hora_fin) VALUES
 -- Mesero 1: Lunes a viernes 09:00-17:00
 (1, 'Lunes',     '09:00:00', '17:00:00'),
 (1, 'Martes',    '09:00:00', '17:00:00'),
@@ -146,36 +139,59 @@ INSERT INTO administrativo (num_empleado, rol) VALUES
    4) DEPENDIENTES
    ============================================================ */
 
-INSERT INTO dependiente (num_empleado, id_dependiente, nombre, parentesco, curp) VALUES
-(1, 1, 'Victoria Verstappen', 'Hermana', 'VEVI010101MDFRRR01'),
-(2, 1, 'Adam Norris', 'Padre', 'NOAD010101HDFRRR02'),
-(5, 1, 'Roscoe Hamilton', 'Mascota', 'HARA010101HDFRRR03'),
-(8, 1, 'Lorena Alonso', 'Hermana', 'ALLO010101MDFRRR04'),
-(21,1, 'Antonio Pérez', 'Padre', 'PEAT010101HDFRRR05');
+
+INSERT INTO dependiente (num_empleado, id_dependiente, nombre, ap_pat, parentesco, curp) VALUES
+(1,  1, 'Victoria', 'Verstappen', 'Hermana', 'VEVI010101MDFRRR01'),
+(2,  1, 'Adam',     'Norris',     'Padre',   'NOAD010101HDFRRR02'),
+(5,  1, 'Roscoe',   'Hamilton',   'Mascota', 'HARA010101HDFRRR03'),
+(8,  1, 'Lorena',   'Alonso',     'Hermana', 'ALLO010101MDFRRR04'),
+(21, 1, 'Antonio',  'Pérez',      'Padre',   'PEAT010101HDFRRR05');
+
 
 /* ============================================================
    5) CLIENTES
    ============================================================ */
 
+-- Primero: Registramos los datos generales en la tabla CLIENTE
 INSERT INTO cliente
-(id_cliente, nombre, ap_pat, ap_mat, rfc, razon_social, fecha_nac, email, calle, numero, colonia, cp, estado)
+(id_cliente, rfc, email, calle, numero, colonia, cp, estado, tipo_cliente)
 VALUES
-(1,  'Ericka',          'Aguilar',      'Lara',       'AULE010101MX1', 'Ericka Aguilar Lara', '2001-01-01', 'ericka.aguilar@example.com',       'Av Universidad', '100', 'Copilco',     '04360', 'CDMX'),
-(2,  'Sofía',           'Bautista',     'Reyes',      'BARE010101MX2', 'Sofía Bautista Reyes', '2001-02-02', 'sofia.bautista@example.com',      'Insurgentes',    '200', 'Del Valle',   '03100', 'CDMX'),
-(3,  'José Tristán',    'Bermejo',      'Flores',     'BEFL010101MX3', 'José Tristán Bermejo Flores', '2001-03-03', 'jose.bermejo@example.com', 'Reforma',        '300', 'Juárez',      '06600', 'CDMX'),
-(4,  'Ximena Carolina', 'Cruz',         'Basilio',    'CRBA010101MX4', 'Ximena Carolina Cruz Basilio', '2001-04-04', 'ximena.cruz@example.com', 'Pilares',        '400', 'Narvarte',    '03020', 'CDMX'),
-(5,  'Rodrigo',         'Jardón',       'Marín',      'JAMA010101MX5', 'Rodrigo Jardón Marín', '2001-05-05', 'rodrigo.jardon@example.com',      'Chiapas',        '500', 'Roma Norte',  '06700', 'CDMX'),
-(6,  'Héctor Emilio',   'Parra',        'Fernández',  'PAFE010101MX6', 'Héctor Emilio Parra Fernández', '2001-06-06', 'hector.parra@example.com', 'Puebla',         '600', 'Condesa',     '06140', 'CDMX'),
-(7,  'Teodora Vicenta', 'Villavicencio','Oraverás',   'VIOT010101MX7', 'Teodora Vicenta Villavicencio Oraverás', '1988-07-07', 'teodora.villavicencio@example.com', 'Palmas', '700', 'Polanco', '11550', 'CDMX'),
-(8,  'María Fernanda',  'Gómez',        'López',      'GOLO010101MX8', 'María Fernanda Gómez López', '1999-08-08', 'maria.gomez@example.com',        'Madero',         '80',  'Centro',      '06000', 'CDMX'),
-(9,  'Diego',           'Martínez',     'Santos',     'MASA010101MX9', 'Diego Martínez Santos', '1998-09-09', 'diego.martinez@example.com',      'Bolívar',        '90',  'Obrera',      '06800', 'CDMX'),
-(10, 'Valeria',         'Hernández',    'Ríos',       'HERI010101MX0', 'Valeria Hernández Ríos', '2000-10-10', 'valeria.hernandez@example.com',   'Sonora',         '10',  'Roma Sur',    '06760', 'CDMX'),
-(11, 'Camila',          'Torres',       'Nava',       'TONA010101MX1', 'Camila Torres Nava', '1997-11-11', 'camila.torres@example.com',         'Morelos',        '11',  'Coyoacán',    '04030', 'CDMX'),
-(12, 'Emiliano',        'Ruiz',         'Castro',     'RUCA010101MX2', 'Emiliano Ruiz Castro', '1996-12-12', 'emiliano.ruiz@example.com',       'Acoxpa',         '12',  'Coapa',       '04980', 'CDMX'),
-(13, 'Natalia',         'Ortega',       'Vega',       'ORVE010101MX3', 'Natalia Ortega Vega', '2002-01-13', 'natalia.ortega@example.com',       'Homero',         '13',  'Polanco',     '11550', 'CDMX'),
-(14, 'Andrés',          'Luna',         'Paredes',    'LUPE010101MX4', 'Andrés Luna Paredes', '1995-02-14', 'andres.luna@example.com',          'Yucatán',        '14',  'Roma Norte',  '06700', 'CDMX'),
-(15, 'Regina',          'Salazar',      'Mora',       'SAMO010101MX5', 'Regina Salazar Mora', '1994-03-15', 'regina.salazar@example.com',       'Amsterdam',      '15',  'Hipódromo',   '06100', 'CDMX');
+(1,  'AULE010101MX1', 'ericka.aguilar@example.com',        'Av Universidad', '100', 'Copilco',      '04360', 'CDMX', 'FISICA'),
+(2,  'BARE010101MX2', 'sofia.bautista@example.com',        'Insurgentes',    '200', 'Del Valle',    '03100', 'CDMX', 'FISICA'),
+(3,  'BEFL010101MX3', 'jose.bermejo@example.com',          'Reforma',        '300', 'Juárez',       '06600', 'CDMX', 'FISICA'),
+(4,  'CRBA010101MX4', 'ximena.cruz@example.com',           'Pilares',        '400', 'Narvarte',     '03020', 'CDMX', 'FISICA'),
+(5,  'JAMA010101MX5', 'rodrigo.jardon@example.com',        'Chiapas',        '500', 'Roma Norte',   '06700', 'CDMX', 'FISICA'),
+(6,  'PAFE010101MX6', 'hector.parra@example.com',          'Puebla',         '600', 'Condesa',      '06140', 'CDMX', 'FISICA'),
+(7,  'VIOT010101MX7', 'teodora.villavicencio@example.com', 'Palmas',         '700', 'Polanco',      '11550', 'CDMX', 'FISICA'),
+(8,  'GOLO010101MX8', 'maria.gomez@example.com',           'Madero',         '80',  'Centro',       '06000', 'CDMX', 'FISICA'),
+(9,  'MASA010101MX9', 'diego.martinez@example.com',        'Bolívar',        '90',  'Obrera',       '06800', 'CDMX', 'FISICA'),
+(10, 'HERI010101MX0', 'valeria.hernandez@example.com',     'Sonora',         '10',  'Roma Sur',     '06760', 'CDMX', 'FISICA'),
+(11, 'TONA010101MX1', 'camila.torres@example.com',         'Morelos',        '11',  'Coyoacán',     '04030', 'CDMX', 'FISICA'),
+(12, 'RUCA010101MX2', 'emiliano.ruiz@example.com',         'Acoxpa',         '12',  'Coapa',        '04980', 'CDMX', 'FISICA'),
+(13, 'ORVE010101MX3', 'natalia.ortega@example.com',        'Homero',         '13',  'Polanco',      '11550', 'CDMX', 'FISICA'),
+(14, 'LUPE010101MX4', 'andres.luna@example.com',           'Yucatán',        '14',  'Roma Norte',   '06700', 'CDMX', 'FISICA'),
+(15, 'SAMO010101MX5', 'regina.salazar@example.com',        'Amsterdam',      '15',  'Hipódromo',    '06100', 'CDMX', 'FISICA');
 
+
+-- Segundo: Registramos los datos específicos en PERSONA_FISICA
+INSERT INTO persona_fisica 
+(id_cliente, nombre, ap_pat, ap_mat, fecha_nac)
+VALUES
+(1,  'Ericka',          'Aguilar',       'Lara',       '2001-01-01'),
+(2,  'Sofía',           'Bautista',      'Reyes',      '2001-02-02'),
+(3,  'José Tristán',    'Bermejo',       'Flores',     '2001-03-03'),
+(4,  'Ximena Carolina', 'Cruz',          'Basilio',    '2001-04-04'),
+(5,  'Rodrigo',         'Jardón',        'Marín',      '2001-05-05'),
+(6,  'Héctor Emilio',   'Parra',         'Fernández',  '2001-06-06'),
+(7,  'Teodora Vicenta', 'Villavicencio', 'Oraverás',   '1988-07-07'),
+(8,  'María Fernanda',  'Gómez',         'López',      '1999-08-08'),
+(9,  'Diego',           'Martínez',      'Santos',     '1998-09-09'),
+(10, 'Valeria',         'Hernández',     'Ríos',       '2000-10-10'),
+(11, 'Camila',          'Torres',        'Nava',       '1997-11-11'),
+(12, 'Emiliano',        'Ruiz',          'Castro',     '1996-12-12'),
+(13, 'Natalia',         'Ortega',        'Vega',       '2002-01-13'),
+(14, 'Andrés',          'Luna',          'Paredes',    '1995-02-14'),
+(15, 'Regina',          'Salazar',       'Mora',       '1994-03-15');
 /* ============================================================
    6) CATEGORÍAS DEL MENÚ
    ============================================================ */
