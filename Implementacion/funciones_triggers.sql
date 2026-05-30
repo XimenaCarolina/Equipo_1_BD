@@ -96,3 +96,36 @@ BEGIN
     WHERE o.fecha BETWEEN fecha_inicio_p AND fecha_fin_p;
 END;
 LANGUAGE plpgsql;
+
+--  Funcion que calcula el total de ordenes y el monto total
+
+CREATE OR REPLACE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
+RETURNS TABLE (
+    total_ordenes INTEGER,
+    monto_total NUMERIC(10,2)
+) AS $$
+DECLARE
+    es_mesero BOOLEAN;
+BEGIN
+    -- Se verifica si el número de empleado corresponde a un mesero
+    SELECT EXISTS (
+        SELECT 1
+        FROM mesero
+        WHERE num_empleado = p_num_empleado
+    ) INTO es_mesero;
+
+    IF NOT es_mesero THEN
+        RAISE EXCEPTION 'El número de empleado % no corresponde a un mesero.', p_num_empleado;
+    END IF;
+
+    -- Calcular el total de órdenes y el monto total para el mesero
+    RETURN QUERY
+    SELECT 
+        COUNT(o.folio)::INTEGER,
+        -- COALESCE se utiliza para manejar el caso en que no haya órdenes, devolviendo 0 en lugar de NULL
+        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2)
+    FROM orden o
+    WHERE num_mesero = p_num_empleado
+    AND o.fecha::DATE = CURRENT_DATE; -- Solo se consideran las órdenes del día actual
+END;
+$$ LANGUAGE plpgsql;
