@@ -81,10 +81,8 @@ CREATE TABLE telefono_empleado (
 
 -- SUBTIPO: MESERO
 -- Especialización parcial y traslapada
-
 CREATE TABLE mesero (
     num_empleado INTEGER NOT NULL,
-    horario VARCHAR(80) NOT NULL,
 
     CONSTRAINT pk_mesero
         PRIMARY KEY (num_empleado),
@@ -95,7 +93,6 @@ CREATE TABLE mesero (
         ON UPDATE CASCADE
         ON DELETE CASCADE
 );
-
 
 -- ENTIDAD_DEBIL DE: MESERO
 
