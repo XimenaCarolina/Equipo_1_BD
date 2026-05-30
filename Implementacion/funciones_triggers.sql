@@ -37,7 +37,7 @@ $$ LANGUAGE plpgsql;
 CREATE OR REPLACE FUNCTION fn_actualizar_totalOrden()
 RETURNS TRIGGER AS $$
 DECLARE
-    v_folio INTEGER; --Acá se guarda el folio de la orden que debe actualizarse
+    v_folio VARCHAR(10); --Acá se guarda el folio de la orden que debe actualizarse
 BEGIN
     IF TG_OP = 'DELETE' THEN --TG_OP guarda qué operación activó el trigger (INSERT, UPDATE O DELETE)
         v_folio := OLD.folio; --Si es DELETE el folio se encuentra en OLD, porque el registro ya no existe
@@ -70,22 +70,3 @@ CREATE TRIGGER trg_actualizar_totalOrden
 AFTER INSERT OR UPDATE OR DELETE
 ON detalle_orden
 FOR EACH ROW EXECUTE FUNCTION fn_actualizar_totalOrden();
-
-CREATE OR REPLACE FUNCTION rendimiento_ventas(fecha_inicio_p TIMESTAMP, fecha_fin_p TIMESTAMP)
-RETURNS TABLE (
-    total_ventas INTEGER,
-    monto_total NUMERIC(10,2)
-) AS $$
-BEGIN
-    if fecha_fin_p IS NULL THEN
-        fecha_fin_p := fecha_inicio_p;
-    END IF;
-
-    RETURN QUERY
-    SELECT 
-        COUNT(o.folio)::INTEGER,
-        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2)
-    FROM orden o
-    WHERE o.fecha BETWEEN fecha_inicio_p AND fecha_fin_p;
-END;
-LANGUAGE plpgsql;

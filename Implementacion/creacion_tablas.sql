@@ -222,7 +222,7 @@ CREATE TABLE producto (
 -- ENTIDAD: ORDEN
 
 CREATE TABLE orden (
-    folio INTEGER,
+    folio VARCHAR(10) NOT NULL,
     num_mesero INTEGER NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     total_pagar NUMERIC(10,2) NOT NULL DEFAULT 0,
@@ -244,7 +244,7 @@ CREATE TABLE orden (
 -- ORDEN - PRODUCTO
 
 CREATE TABLE detalle_orden (
-    folio INTEGER NOT NULL,
+    folio VARCHAR(10) NOT NULL,
     id_producto INTEGER NOT NULL,
     cant_prod INTEGER NOT NULL,
     subtotal_prod NUMERIC(10,2) NOT NULL DEFAULT 0,
@@ -275,7 +275,7 @@ CREATE TABLE detalle_orden (
 -- ORDEN - CLIENTE
 
 CREATE TABLE pago (
-    folio INTEGER NOT NULL,
+    folio VARCHAR(10) NOT NULL,
     id_cliente INTEGER NOT NULL,
     porcentaje_pago NUMERIC(5,2) NOT NULL,
     monto_pago NUMERIC(10,2) NOT NULL DEFAULT 0,
@@ -306,7 +306,7 @@ CREATE TABLE pago (
 
 CREATE TABLE factura (
     id_factura INTEGER,
-    folio INTEGER NOT NULL,
+    folio VARCHAR(10) NOT NULL,
     id_cliente INTEGER NOT NULL,
     fecha_emision TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
