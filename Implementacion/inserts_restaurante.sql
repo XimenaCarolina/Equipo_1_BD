@@ -171,7 +171,11 @@ VALUES
 (13, 'ORVE010101MX3', 'natalia.ortega@example.com',        'Homero',         '13',  'Polanco',      '11550', 'CDMX', 'FISICA'),
 (14, 'LUPE010101MX4', 'andres.luna@example.com',           'Yucatán',        '14',  'Roma Norte',   '06700', 'CDMX', 'FISICA'),
 (15, 'SAMO010101MX5', 'regina.salazar@example.com',        'Amsterdam',      '15',  'Hipódromo',    '06100', 'CDMX', 'FISICA');
-
+(16, 'RBR100101RB1', 'facturacion@redbullracing.com', 'Circuito Gral', '1',    'Polanco',  '11550', 'CDMX', 'MORAL'),
+(17, 'SFE200202SF2', 'pagos@ferrari.com',             'Maranello',     '27',   'Lomas',    '11000', 'CDMX', 'MORAL'),
+(18, 'MCL300303MC3', 'contacto@mclaren.com',          'Woking',        '4',    'Santa Fe', '01210', 'CDMX', 'MORAL'),
+(19, 'NEO400404ND4', 'finanzas@neon.tech',            'Cloud Server',  '54',   'Condesa',  '06140', 'CDMX', 'MORAL'),
+(20, 'UNA500505UN5', 'rectoria@unam.mx',              'Av Universidad','3000', 'Copilco',  '04510', 'CDMX', 'MORAL');
 
 -- Segundo: Registramos los datos específicos en PERSONA_FISICA
 INSERT INTO persona_fisica 
@@ -192,6 +196,18 @@ VALUES
 (13, 'Natalia',         'Ortega',        'Vega',       '2002-01-13'),
 (14, 'Andrés',          'Luna',          'Paredes',    '1995-02-14'),
 (15, 'Regina',          'Salazar',       'Mora',       '1994-03-15');
+
+
+-- Tercero: Insertar los datos específicos en PERSONA_MORAL
+-- Usamos exactamente los mismos IDs que acabamos de registrar arriba
+INSERT INTO persona_moral 
+(id_cliente, razon_social) 
+VALUES
+(16, 'Red Bull Racing S.A. de C.V.'),
+(17, 'Scuderia Ferrari S.A.B. de C.V.'),
+(18, 'McLaren Racing Limited S.A.'),
+(19, 'Neon Databases México S. de R.L.'),
+(20, 'Universidad Nacional Autónoma de México');
 /* ============================================================
    6) CATEGORÍAS DEL MENÚ
    ============================================================ */
