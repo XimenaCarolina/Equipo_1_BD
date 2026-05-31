@@ -5,7 +5,7 @@
 DROP VIEW IF EXISTS vista_sim_fac;
 DROP VIEW IF EXISTS platillo_mas_vendido;
 
-CREATE OR REPLACE VIEW platillo_mas_vendido AS 
+CREATE VIEW platillo_mas_vendido AS 
 SELECT 
     p.id_producto, 
     p.nombre, 
