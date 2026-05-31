@@ -77,9 +77,9 @@ RETURNS TABLE (
     monto_total NUMERIC(10,2)
 ) AS $$
 BEGIN
-    -- Si no se proporciona fecha de fin, se toma la misma fecha y hora de inicio
+    -- Si no se proporciona fecha de fin, se toma todo el día de la fecha inicial
     IF fecha_fin_p IS NULL THEN
-        fecha_fin_p := fecha_inicio_p;
+        fecha_fin_p := fecha_inicio_p + INTERVAL '1 day';
     END IF;
 
     RETURN QUERY
@@ -90,8 +90,6 @@ BEGIN
     WHERE o.fecha BETWEEN fecha_inicio_p AND fecha_fin_p;
 END;
 $$ LANGUAGE plpgsql;
-
--- Funcion que calcula el total de ordenes y el monto total dentro de un intervalo de fecha y hora
 
 
 /* ============================================================
@@ -130,9 +128,9 @@ BEGIN
         RAISE EXCEPTION 'El número de empleado % no corresponde a un mesero.', p_num_empleado;
     END IF;
 
-    -- Si no se proporciona fecha de fin, se toma la misma fecha y hora de inicio
-    IF p_fecha_fin IS NULL THEN
-        p_fecha_fin := p_fecha_inicio;
+    -- Si no se proporciona fecha de fin, se toma todo el día de la fecha inicial
+    IF fecha_fin_p IS NULL THEN
+        p_fecha_fin := p_fecha_inicio + INTERVAL '1 day';
     END IF;
 
     -- Si sí es mesero, se cuentan sus órdenes dentro del intervalo de fecha y hora definido
