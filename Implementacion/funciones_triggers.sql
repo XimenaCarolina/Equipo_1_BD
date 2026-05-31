@@ -107,7 +107,7 @@ $$ LANGUAGE plpgsql;
    5) También suma el monto total vendido por esas órdenes.
 */
 
-CREATE OR REPLACE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
+CREATE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
 RETURNS TABLE (
     total_ordenes INTEGER,
     monto_total NUMERIC(10,2)

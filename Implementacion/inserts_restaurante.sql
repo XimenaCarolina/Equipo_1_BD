@@ -170,7 +170,7 @@ VALUES
 (12, 'RUCA010101MX2', 'emiliano.ruiz@example.com',         'Acoxpa',         '12',  'Coapa',        '04980', 'CDMX', 'FISICA'),
 (13, 'ORVE010101MX3', 'natalia.ortega@example.com',        'Homero',         '13',  'Polanco',      '11550', 'CDMX', 'FISICA'),
 (14, 'LUPE010101MX4', 'andres.luna@example.com',           'Yucatán',        '14',  'Roma Norte',   '06700', 'CDMX', 'FISICA'),
-(15, 'SAMO010101MX5', 'regina.salazar@example.com',        'Amsterdam',      '15',  'Hipódromo',    '06100', 'CDMX', 'FISICA');
+(15, 'SAMO010101MX5', 'regina.salazar@example.com',        'Amsterdam',      '15',  'Hipódromo',    '06100', 'CDMX', 'FISICA'),
 (16, 'RBR100101RB1', 'facturacion@redbullracing.com', 'Circuito Gral', '1',    'Polanco',  '11550', 'CDMX', 'MORAL'),
 (17, 'SFE200202SF2', 'pagos@ferrari.com',             'Maranello',     '27',   'Lomas',    '11000', 'CDMX', 'MORAL'),
 (18, 'MCL300303MC3', 'contacto@mclaren.com',          'Woking',        '4',    'Santa Fe', '01210', 'CDMX', 'MORAL'),
@@ -379,10 +379,13 @@ INSERT INTO factura (id_factura, folio, id_cliente, fecha_emision) VALUES
 SELECT 'empleado' AS tabla, COUNT(*) AS total FROM empleado
 UNION ALL SELECT 'telefono_empleado', COUNT(*) FROM telefono_empleado
 UNION ALL SELECT 'mesero', COUNT(*) FROM mesero
+UNION ALL SELECT 'horario_mesero', COUNT(*) FROM horario_mesero
 UNION ALL SELECT 'cocinero', COUNT(*) FROM cocinero
 UNION ALL SELECT 'administrativo', COUNT(*) FROM administrativo
 UNION ALL SELECT 'dependiente', COUNT(*) FROM dependiente
 UNION ALL SELECT 'cliente', COUNT(*) FROM cliente
+UNION ALL SELECT 'persona_fisica', COUNT(*) FROM persona_fisica
+UNION ALL SELECT 'persona_moral', COUNT(*) FROM persona_moral
 UNION ALL SELECT 'categoria', COUNT(*) FROM categoria
 UNION ALL SELECT 'producto', COUNT(*) FROM producto
 UNION ALL SELECT 'orden', COUNT(*) FROM orden
