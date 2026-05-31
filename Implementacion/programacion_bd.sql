@@ -91,8 +91,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Funcion que calcula el total de ordenes y el monto total dentro de un intervalo de fecha y hora
-
 
 /* ============================================================
    FUNCION: RENDIMIENTO DEL MESERO
