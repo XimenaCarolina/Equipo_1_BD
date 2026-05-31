@@ -1,5 +1,5 @@
 -- Generado por Oracle SQL Developer Data Modeler 24.3.1.351.0831
---   en:        2026-05-27 10:41:57 CST
+--   en:        2026-05-30 18:05:49 CST
 --   sitio:      Oracle Database 21c
 --   tipo:      Oracle Database 21c
 
@@ -14,6 +14,7 @@ CREATE TABLE administrativo
      num_empleado INTEGER  NOT NULL , 
      rol          VARCHAR2 (50)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE administrativo 
@@ -25,6 +26,7 @@ CREATE TABLE categoria
      nombre       VARCHAR2 (80)  NOT NULL , 
      descripcion  VARCHAR2 (255)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE categoria 
@@ -36,21 +38,22 @@ ALTER TABLE categoria
 CREATE TABLE cliente 
     ( 
      id_cliente   INTEGER  NOT NULL , 
-     nombre       VARCHAR2 (60)  NOT NULL , 
-     ap_pat       VARCHAR2 (20)  NOT NULL , 
-     ap_mat       VARCHAR2 (20) , 
      rfc          VARCHAR2 (13)  NOT NULL , 
-     razon_social VARCHAR2 (130)  NOT NULL , 
-     fecha_nac    DATE  NOT NULL , 
      email        VARCHAR2 (120)  NOT NULL , 
      calle        VARCHAR2 (80)  NOT NULL , 
-     numero       VARCHAR2 (7)  NOT NULL , 
+     numero       VARCHAR2 (10)  NOT NULL , 
      colonia      VARCHAR2 (80)  NOT NULL , 
      cp           VARCHAR2 (10)  NOT NULL , 
-     estado       VARCHAR2 (60)  NOT NULL 
+     estado       VARCHAR2 (60)  NOT NULL , 
+     tipo_cliente VARCHAR2 (10)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
+ALTER TABLE cliente 
+    ADD CONSTRAINT chk_cliente_tipo 
+    CHECK (tipo_cliente IN ('FISICA', 'MORAL'))
+;
 ALTER TABLE cliente 
     ADD CONSTRAINT pk_cliente PRIMARY KEY ( id_cliente ) ;
 
@@ -62,6 +65,7 @@ CREATE TABLE cocinero
      num_empleado INTEGER  NOT NULL , 
      especialidad VARCHAR2 (50)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE cocinero 
@@ -71,10 +75,13 @@ CREATE TABLE dependiente
     ( 
      num_empleado   INTEGER  NOT NULL , 
      id_dependiente INTEGER  NOT NULL , 
-     nombre         VARCHAR2 (80)  NOT NULL , 
+     nombre         VARCHAR2 (60)  NOT NULL , 
+     ap_pat         VARCHAR2 (20)  NOT NULL , 
+     ap_mat         VARCHAR2 (20) , 
      parentesco     VARCHAR2 (50)  NOT NULL , 
      curp           VARCHAR2 (18)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE dependiente 
@@ -85,11 +92,12 @@ ALTER TABLE dependiente
 
 CREATE TABLE detalle_orden 
     ( 
-     folio         INTEGER  NOT NULL , 
-     id_producto   NUMBER  NOT NULL , 
+     folio         VARCHAR2 (10)  NOT NULL , 
+     id_producto   INTEGER  NOT NULL , 
      cant_prod     INTEGER  NOT NULL , 
      subtotal_prod NUMBER (10,2) DEFAULT 0  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE detalle_orden 
@@ -113,7 +121,7 @@ CREATE TABLE empleado
      ap_mat       VARCHAR2 (20) , 
      edad         INTEGER  NOT NULL , 
      rfc          VARCHAR2 (13)  NOT NULL , 
-     calle        VARCHAR2 (7)  NOT NULL , 
+     calle        VARCHAR2 (80)  NOT NULL , 
      numero       VARCHAR2 (10)  NOT NULL , 
      colonia      VARCHAR2 (80)  NOT NULL , 
      cp           VARCHAR2 (10)  NOT NULL , 
@@ -122,17 +130,18 @@ CREATE TABLE empleado
      fecha_nac    DATE  NOT NULL , 
      foto         VARCHAR2 (100)  NOT NULL 
     ) 
+    LOGGING 
 ;
-
-ALTER TABLE empleado 
-    ADD CONSTRAINT chk_empleado_sueldo 
-    CHECK (sueldo >= 0)
-;
-
 
 ALTER TABLE empleado 
     ADD CONSTRAINT chk_empleado_edad 
     CHECK (edad >= 18)
+;
+
+
+ALTER TABLE empleado 
+    ADD CONSTRAINT chk_empleado_sueldo 
+    CHECK (sueldo >= 0)
 ;
 ALTER TABLE empleado 
     ADD CONSTRAINT pk_empleado PRIMARY KEY ( num_empleado ) ;
@@ -143,10 +152,11 @@ ALTER TABLE empleado
 CREATE TABLE factura 
     ( 
      id_factura    INTEGER  NOT NULL , 
-     folio         INTEGER  NOT NULL , 
+     folio         VARCHAR2 (10)  NOT NULL , 
      id_cliente    INTEGER  NOT NULL , 
      fecha_emision TIMESTAMP DEFAULT CURRENT_TIMESTAMP  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE factura 
@@ -155,11 +165,34 @@ ALTER TABLE factura
 ALTER TABLE factura 
     ADD CONSTRAINT uq_factura_orden_cliente UNIQUE ( folio , id_cliente ) ;
 
-CREATE TABLE mesero 
+CREATE TABLE horario_mesero 
     ( 
      num_empleado INTEGER  NOT NULL , 
-     horario      VARCHAR2 (80)  NOT NULL 
+     dia_semana   VARCHAR2 (10)  NOT NULL , 
+     hora_inicio  DATE  NOT NULL , 
+     hora_fin     DATE  NOT NULL 
     ) 
+    LOGGING 
+;
+
+ALTER TABLE horario_mesero 
+    ADD CONSTRAINT chk_horario_dia 
+    CHECK (dia_semana IN ( 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo' ))
+;
+
+
+ALTER TABLE horario_mesero 
+    ADD CONSTRAINT chk_horario_horas 
+    CHECK (hora_inicio < hora_fin)
+;
+ALTER TABLE horario_mesero 
+    ADD CONSTRAINT pk_horario_mesero PRIMARY KEY ( num_empleado, dia_semana ) ;
+
+CREATE TABLE mesero 
+    ( 
+     num_empleado INTEGER  NOT NULL 
+    ) 
+    LOGGING 
 ;
 
 ALTER TABLE mesero 
@@ -167,11 +200,12 @@ ALTER TABLE mesero
 
 CREATE TABLE orden 
     ( 
-     folio       INTEGER  NOT NULL , 
+     folio       VARCHAR2 (10)  NOT NULL , 
      num_mesero  INTEGER  NOT NULL , 
      fecha       TIMESTAMP DEFAULT CURRENT_TIMESTAMP  NOT NULL , 
      total_pagar NUMBER (10,2) DEFAULT 0  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE orden 
@@ -183,37 +217,64 @@ ALTER TABLE orden
 
 CREATE TABLE pago 
     ( 
-     folio           INTEGER  NOT NULL , 
+     folio           VARCHAR2 (10)  NOT NULL , 
      id_cliente      INTEGER  NOT NULL , 
      porcentaje_pago NUMBER (5,2)  NOT NULL , 
      monto_pago      NUMBER (10,2) DEFAULT 0  NOT NULL 
     ) 
+    LOGGING 
 ;
-
-ALTER TABLE pago 
-    ADD CONSTRAINT chk_pago_porcentaje 
-    CHECK (porcentaje_pago > 0 AND porcentaje_pago <= 100)
-;
-
 
 ALTER TABLE pago 
     ADD CONSTRAINT chk_pago_monto 
     CHECK (monto_pago >= 0)
 ;
+
+
+ALTER TABLE pago 
+    ADD CONSTRAINT chk_pago_porcentaje 
+    CHECK (porcentaje_pago > 0 AND porcentaje_pago <= 100)
+;
 ALTER TABLE pago 
     ADD CONSTRAINT pk_pago PRIMARY KEY ( folio, id_cliente ) ;
 
+CREATE TABLE persona_fisica 
+    ( 
+     id_cliente INTEGER  NOT NULL , 
+     nombre     VARCHAR2 (60)  NOT NULL , 
+     ap_pat     VARCHAR2 (20)  NOT NULL , 
+     ap_mat     VARCHAR2 (20) , 
+     fecha_nac  DATE  NOT NULL 
+    ) 
+    LOGGING 
+;
+
+ALTER TABLE persona_fisica 
+    ADD CONSTRAINT pk_persona_fisica PRIMARY KEY ( id_cliente ) ;
+
+CREATE TABLE persona_moral 
+    ( 
+     id_cliente   INTEGER  NOT NULL , 
+     razon_social VARCHAR2 (250)  NOT NULL 
+    ) 
+    LOGGING 
+;
+
+ALTER TABLE persona_moral 
+    ADD CONSTRAINT pk_persona_moral PRIMARY KEY ( id_cliente ) ;
+
 CREATE TABLE producto 
     ( 
-     id_producto    NUMBER  NOT NULL , 
+     id_producto    INTEGER  NOT NULL , 
      id_categoria   INTEGER  NOT NULL , 
-     nombre         VARCHAR2 (80)  NOT NULL , 
+     nombre         VARCHAR2 (150)  NOT NULL , 
      descripcion    VARCHAR2 (250)  NOT NULL , 
-     receta         VARCHAR2 (250) , 
+     receta         VARCHAR2 (500) , 
      precio         NUMBER (10,2)  NOT NULL , 
      disponibilidad NUMBER  NOT NULL , 
      tipo_producto  VARCHAR2 (10)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE producto 
@@ -234,6 +295,7 @@ CREATE TABLE telefono_empleado
      num_empleado INTEGER  NOT NULL , 
      telefono     VARCHAR2 (20)  NOT NULL 
     ) 
+    LOGGING 
 ;
 
 ALTER TABLE telefono_empleado 
@@ -249,6 +311,7 @@ ALTER TABLE administrativo
      num_empleado
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE cocinero 
@@ -261,6 +324,7 @@ ALTER TABLE cocinero
      num_empleado
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE dependiente 
@@ -273,6 +337,7 @@ ALTER TABLE dependiente
      num_empleado
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE detalle_orden 
@@ -285,6 +350,7 @@ ALTER TABLE detalle_orden
      folio
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE detalle_orden 
@@ -296,6 +362,7 @@ ALTER TABLE detalle_orden
     ( 
      id_producto
     ) 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE factura 
@@ -309,6 +376,20 @@ ALTER TABLE factura
      folio,
      id_cliente
     ) 
+    NOT DEFERRABLE 
+;
+
+ALTER TABLE horario_mesero 
+    ADD CONSTRAINT fk_horario_mesero_mesero FOREIGN KEY 
+    ( 
+     num_empleado
+    ) 
+    REFERENCES mesero 
+    ( 
+     num_empleado
+    ) 
+    ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE mesero 
@@ -321,6 +402,7 @@ ALTER TABLE mesero
      num_empleado
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE orden 
@@ -332,6 +414,7 @@ ALTER TABLE orden
     ( 
      num_empleado
     ) 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE pago 
@@ -343,6 +426,7 @@ ALTER TABLE pago
     ( 
      id_cliente
     ) 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE pago 
@@ -355,6 +439,33 @@ ALTER TABLE pago
      folio
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
+;
+
+ALTER TABLE persona_fisica 
+    ADD CONSTRAINT fk_persona_fisica_cliente FOREIGN KEY 
+    ( 
+     id_cliente
+    ) 
+    REFERENCES cliente 
+    ( 
+     id_cliente
+    ) 
+    ON DELETE CASCADE 
+    NOT DEFERRABLE 
+;
+
+ALTER TABLE persona_moral 
+    ADD CONSTRAINT fk_persona_moral_cliente FOREIGN KEY 
+    ( 
+     id_cliente
+    ) 
+    REFERENCES cliente 
+    ( 
+     id_cliente
+    ) 
+    ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE producto 
@@ -366,6 +477,7 @@ ALTER TABLE producto
     ( 
      id_categoria
     ) 
+    NOT DEFERRABLE 
 ;
 
 ALTER TABLE telefono_empleado 
@@ -378,15 +490,16 @@ ALTER TABLE telefono_empleado
      num_empleado
     ) 
     ON DELETE CASCADE 
+    NOT DEFERRABLE 
 ;
 
 
 
 -- Informe de Resumen de Oracle SQL Developer Data Modeler: 
 -- 
--- CREATE TABLE                            13
+-- CREATE TABLE                            16
 -- CREATE INDEX                             0
--- ALTER TABLE                             39
+-- ALTER TABLE                             48
 -- CREATE VIEW                              0
 -- ALTER VIEW                               0
 -- CREATE PACKAGE                           0
