@@ -98,16 +98,7 @@ END;
 $$ LANGUAGE plpgsql;
 --  Funcion que calcula el total de ordenes y el monto total
 
-/* CONSULTAR RENDIMIENTO DEL MESERO
-   Con esta función se puede revisar el trabajo de un mesero durante el día:
-   1) Recibe el número de empleado.
-   2) Revisa si ese empleado sí está registrado como mesero.
-   3) Si no es mesero, muestra un mensaje de error.
-   4) Si sí es mesero, cuenta cuántas órdenes registró en el día.
-   5) También suma el monto total vendido por esas órdenes.
-*/
-
-CREATE OR REPLACE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
+CREATE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
 RETURNS TABLE (
     total_ordenes INTEGER,
     monto_total NUMERIC(10,2)
@@ -122,20 +113,18 @@ BEGIN
         WHERE num_empleado = p_num_empleado
     ) INTO es_mesero;
 
-    -- Si el empleado no es mesero, se detiene la función y se muestra un error
-
     IF NOT es_mesero THEN
         RAISE EXCEPTION 'El número de empleado % no corresponde a un mesero.', p_num_empleado;
     END IF;
 
-    -- Si sí es mesero, se cuentan sus órdenes del día y se suma el total vendido
+    -- Calcular el total de órdenes y el monto total para el mesero
     RETURN QUERY
     SELECT 
         COUNT(o.folio)::INTEGER,
         -- COALESCE se utiliza para manejar el caso en que no haya órdenes, devolviendo 0 en lugar de NULL
         COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2)
     FROM orden o
-    WHERE o.num_mesero = p_num_empleado
-      AND o.fecha::DATE = CURRENT_DATE; -- Solo se consideran las órdenes del día actual
+    WHERE num_mesero = p_num_empleado
+    AND o.fecha::DATE = CURRENT_DATE; -- Solo se consideran las órdenes del día actual
 END;
 $$ LANGUAGE plpgsql;
