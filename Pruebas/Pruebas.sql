@@ -154,8 +154,8 @@ ORDER BY folio;
 
 SELECT *
 FROM rendimiento_ventas(
-    '2025-12-01 00:00:00',
-    '2025-12-31 23:59:59'
+    '2025-03-08 00:00:00',
+    '2025-08-21 23:59:59'
 );
 
 
@@ -164,25 +164,16 @@ FROM rendimiento_ventas(
    ============================================================ */
 
 SELECT *
-FROM rendimiento_mesero(1);
-
+FROM rendimiento_mesero(1, '2025-01-15');
 
 /* ============================================================
-   12) PRUEBA SEGURA: ERROR SI NO ES MESERO
+   12) PROBAR FUNCIÓN: RENDIMIENTO DE MESERO si no hay mesero
    ============================================================ */
 
-DO $$
-BEGIN
-    BEGIN
-        PERFORM *
-        FROM rendimiento_mesero(8);
-
-    EXCEPTION
-        WHEN OTHERS THEN
-            RAISE NOTICE 'Prueba correcta: %', SQLERRM;
-    END;
-END;
-$$;
+BEGIN;
+SELECT *
+FROM rendimiento_mesero(8, '2025-01-15');
+ROLLBACK;
 
 
 /* ============================================================

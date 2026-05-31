@@ -68,36 +68,49 @@ $$ LANGUAGE plpgsql;
     mostrando 0.00 cuando no hay ventas en ese periodo.
 */
 
-CREATE FUNCTION rendimiento_ventas(fecha_inicio_p TIMESTAMP, fecha_fin_p TIMESTAMP DEFAULT NULL)
+CREATE OR REPLACE FUNCTION rendimiento_ventas(
+    fecha_inicio_p TIMESTAMP,
+    fecha_fin_p TIMESTAMP DEFAULT NULL
+)
 RETURNS TABLE (
     total_ventas INTEGER,
     monto_total NUMERIC(10,2)
 ) AS $$
 BEGIN
-    if fecha_fin_p IS NULL THEN
+    -- Si no se proporciona fecha de fin, se toma la misma fecha y hora de inicio
+    IF fecha_fin_p IS NULL THEN
         fecha_fin_p := fecha_inicio_p;
     END IF;
 
     RETURN QUERY
     SELECT 
-        COUNT(o.folio)::INTEGER,
-        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2)
+        COUNT(o.folio)::INTEGER AS total_ventas,
+        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2) AS monto_total
     FROM orden o
-    WHERE o.fecha BETWEEN fecha_inicio_p::DATE AND fecha_fin_p::DATE;
+    WHERE o.fecha BETWEEN fecha_inicio_p AND fecha_fin_p;
 END;
 $$ LANGUAGE plpgsql;
---  Funcion que calcula el total de ordenes y el monto total
+
+-- Funcion que calcula el total de ordenes y el monto total dentro de un intervalo de fecha y hora
+
 
 /* ============================================================
    FUNCION: RENDIMIENTO DEL MESERO
-   Esta función permite consultar el rendimiento de un mesero en el día actual.
-   Recibe el número de empleado y devuelve el total de órdenes registradas
-   por ese mesero y el monto total vendido en esas órdenes.
+   Esta función permite consultar el rendimiento de un mesero dentro
+   de un rango de fechas y horas.
+   Recibe el número de empleado, una fecha/hora de inicio y una fecha/hora de fin.
+   Si no se manda fecha/hora de fin, se toma la misma fecha/hora de inicio.
+   Devuelve el total de órdenes registradas por ese mesero y el monto total
+   vendido en esas órdenes.
    Si el número de empleado no corresponde a un mesero, se muestra un mensaje
    de error.
    ============================================================ */
 
-CREATE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
+CREATE OR REPLACE FUNCTION rendimiento_mesero(
+    p_num_empleado INTEGER,
+    p_fecha_inicio TIMESTAMP,
+    p_fecha_fin TIMESTAMP DEFAULT NULL
+)
 RETURNS TABLE (
     total_ordenes INTEGER,
     monto_total NUMERIC(10,2)
@@ -113,20 +126,24 @@ BEGIN
     ) INTO es_mesero;
 
     -- Si el empleado no es mesero, se detiene la función y se muestra un error
-
     IF NOT es_mesero THEN
         RAISE EXCEPTION 'El número de empleado % no corresponde a un mesero.', p_num_empleado;
     END IF;
 
-    -- Si sí es mesero, se cuentan sus órdenes del día y se suma el total vendido
+    -- Si no se proporciona fecha de fin, se toma la misma fecha y hora de inicio
+    IF p_fecha_fin IS NULL THEN
+        p_fecha_fin := p_fecha_inicio;
+    END IF;
+
+    -- Si sí es mesero, se cuentan sus órdenes dentro del intervalo de fecha y hora definido
     RETURN QUERY
     SELECT 
-        COUNT(o.folio)::INTEGER,
+        COUNT(o.folio)::INTEGER AS total_ordenes,
         -- COALESCE se utiliza para manejar el caso en que no haya órdenes, devolviendo 0 en lugar de NULL
-        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2)
+        COALESCE(SUM(o.total_pagar), 0.00)::NUMERIC(10,2) AS monto_total
     FROM orden o
     WHERE o.num_mesero = p_num_empleado
-      AND o.fecha::DATE = CURRENT_DATE; -- Solo se consideran las órdenes del día actual
+      AND o.fecha BETWEEN p_fecha_inicio AND p_fecha_fin; -- Se consideran las órdenes dentro del intervalo de fecha y hora definido
 END;
 $$ LANGUAGE plpgsql;
 
