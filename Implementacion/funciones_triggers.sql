@@ -7,7 +7,7 @@
 */
 
 -- Aquí se valida la disponibilidad y se calcula el subtotal del producto
-CREATE OR REPLACE FUNCTION fn_calcular_subtotal()
+CREATE FUNCTION fn_calcular_subtotal()
 RETURNS TRIGGER AS $$
 DECLARE
     precio_prod NUMERIC(10,2);
@@ -34,7 +34,7 @@ $$ LANGUAGE plpgsql;
 
 
 --Acá se actualiza el total de la orden
-CREATE OR REPLACE FUNCTION fn_actualizar_totalOrden()
+CREATE FUNCTION fn_actualizar_totalOrden()
 RETURNS TRIGGER AS $$
 DECLARE
     v_folio VARCHAR(10); --Acá se guarda el folio de la orden que debe actualizarse
@@ -98,7 +98,7 @@ END;
 $$ LANGUAGE plpgsql;
 --  Funcion que calcula el total de ordenes y el monto total
 
-CREATE OR REPLACE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
+CREATE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
 RETURNS TABLE (
     total_ordenes INTEGER,
     monto_total NUMERIC(10,2)
