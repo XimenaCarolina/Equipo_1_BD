@@ -9,7 +9,6 @@
    del restaurante. También se implementan restricciones mediante llaves 
    primarias (PK), llaves foráneas (FK), restricciones UNIQUE y CHECK, con el 
    propósito de mantener la integridad de la información registrada.
-
    ============================================================ */
 
 -- LIMPIEZA DE TABLAS
