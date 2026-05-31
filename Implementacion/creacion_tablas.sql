@@ -272,10 +272,34 @@ CREATE TABLE producto (
         CHECK (tipo_producto IN ('PLATILLO', 'BEBIDA'))
 );
 
+/* 
+   SECUENCIA Y FUNCIÓN PARA GENERAR FOLIO DE ORDEN
+    */
+
+DROP SEQUENCE IF EXISTS seq_folio_orden CASCADE;
+
+CREATE SEQUENCE seq_folio_orden
+START WITH 1
+INCREMENT BY 1;
+
+CREATE FUNCTION generar_folio_orden()
+RETURNS VARCHAR(10) AS $$
+DECLARE
+    num_folio INTEGER;
+    folio_generado VARCHAR(10);
+BEGIN
+    num_folio := nextval('seq_folio_orden');
+
+    folio_generado := 'ORD-' || LPAD(num_folio::TEXT, 3, '0');
+
+    RETURN folio_generado;
+END;
+$$ LANGUAGE plpgsql;
+
 -- ENTIDAD: ORDEN
 
 CREATE TABLE orden (
-    folio VARCHAR(10) NOT NULL,
+    folio VARCHAR(10) NOT NULL DEFAULT generar_folio_orden(),
     num_mesero INTEGER NOT NULL,
     fecha TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     total_pagar NUMERIC(10,2) NOT NULL DEFAULT 0,
@@ -290,7 +314,10 @@ CREATE TABLE orden (
         ON DELETE RESTRICT,
 
     CONSTRAINT chk_orden_total_pagar
-        CHECK (total_pagar >= 0)
+        CHECK (total_pagar >= 0),
+
+    CONSTRAINT chk_orden_folio_formato
+        CHECK (folio ~ '^ORD-[0-9]{3}$')
 );
 
 -- RELACIÓN M:M CONTIENE

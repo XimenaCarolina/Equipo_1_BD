@@ -292,6 +292,9 @@ INSERT INTO orden (folio, num_mesero, fecha, total_pagar) VALUES
 ('ORD-014', 6,  '2025-12-12 19:10:00', 0),
 ('ORD-015', 21, '2025-12-20 21:45:00', 0);
 
+-- Ajusta la secuencia para que la siguiente orden automática sea ORD-016
+SELECT setval('seq_folio_orden', 15);
+
 /* ============================================================
    9) DETALLE_ORDEN
    El subtotal_prod NO se inserta manualmente, 
