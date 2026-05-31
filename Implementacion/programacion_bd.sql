@@ -1,4 +1,8 @@
-/* ACTUALIZAR TOTALES Y VALIDAR DISPONIBILIDAD
+/* ============================================================
+   FUNCIONES
+============================================================
+
+ACTUALIZAR TOTALES Y VALIDAR DISPONIBILIDAD
    Con esta función cada que se agrega un producto a detalle_orden:
    1)Valida que el producto exista.
    2)Valida que esté disponible.
@@ -57,20 +61,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-
---Trigger 1: antes de insertar o modificar un producto en la orden
-CREATE TRIGGER trg_calcular_subtotal
-BEFORE INSERT OR UPDATE OF id_producto, cant_prod
-ON detalle_orden
-FOR EACH ROW EXECUTE FUNCTION fn_calcular_subtotal();
-
-
---  Trigger 2: después de insertar, actualizar o eliminar detalle de orden
-CREATE TRIGGER trg_actualizar_totalOrden
-AFTER INSERT OR UPDATE OR DELETE
-ON detalle_orden
-FOR EACH ROW EXECUTE FUNCTION fn_actualizar_totalOrden();
-
 /* 
     Esta función calcula el rendimiento de ventas dentro de un rango de fechas.
     Si no se manda fecha_fin_p, se toma la misma fecha de inicio.
@@ -98,14 +88,14 @@ END;
 $$ LANGUAGE plpgsql;
 --  Funcion que calcula el total de ordenes y el monto total
 
-/* CONSULTAR RENDIMIENTO DEL MESERO
-   Con esta función se puede revisar el trabajo de un mesero durante el día:
-   1) Recibe el número de empleado.
-   2) Revisa si ese empleado sí está registrado como mesero.
-   3) Si no es mesero, muestra un mensaje de error.
-   4) Si sí es mesero, cuenta cuántas órdenes registró en el día.
-   5) También suma el monto total vendido por esas órdenes.
-*/
+/* ============================================================
+   FUNCION: RENDIMIENTO DEL MESERO
+   Esta función permite consultar el rendimiento de un mesero en el día actual.
+   Recibe el número de empleado y devuelve el total de órdenes registradas
+   por ese mesero y el monto total vendido en esas órdenes.
+   Si el número de empleado no corresponde a un mesero, se muestra un mensaje
+   de error.
+   ============================================================ */
 
 CREATE FUNCTION rendimiento_mesero(p_num_empleado INTEGER)
 RETURNS TABLE (
@@ -139,3 +129,60 @@ BEGIN
       AND o.fecha::DATE = CURRENT_DATE; -- Solo se consideran las órdenes del día actual
 END;
 $$ LANGUAGE plpgsql;
+
+/* ============================================================
+   TRIGGERS PARA CALCULAR EL SUBTOTAL DE CADA PRODUCTO EN 
+   DETALLE_ORDEN Y ACTUALIZAR EL TOTAL DE LA ORDEN CADA QUE SE INSERTA, 
+   ACTUALIZA O ELIMINA UN PRODUCTO EN DETALLE_ORDEN.  
+   ============================================================ */
+
+--Trigger 1: antes de insertar o modificar un producto en la orden
+CREATE TRIGGER trg_calcular_subtotal
+BEFORE INSERT OR UPDATE OF id_producto, cant_prod
+ON detalle_orden
+FOR EACH ROW EXECUTE FUNCTION fn_calcular_subtotal();
+
+
+--  Trigger 2: después de insertar, actualizar o eliminar detalle de orden
+CREATE TRIGGER trg_actualizar_totalOrden
+AFTER INSERT OR UPDATE OR DELETE
+ON detalle_orden
+FOR EACH ROW EXECUTE FUNCTION fn_actualizar_totalOrden();
+
+
+/* ============================================================
+   PROCEDIMIENTO: AGREGAR PRODUCTO A ORDEN
+   Este procedimiento agrega un producto a una orden existente.
+   No calcula directamente el subtotal ni el total, porque eso ya lo hacen
+   los triggers fn_calcular_subtotal() y fn_actualizar_totalOrden()
+   ============================================================ */
+
+CREATE OR REPLACE PROCEDURE sp_agregar_producto_orden(
+    p_folio VARCHAR(10),
+    p_id_producto INTEGER,
+    p_cant_prod INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    --se valida que la orden exista
+    IF NOT EXISTS (
+        SELECT 1
+        FROM orden
+        WHERE folio = p_folio
+    ) THEN
+        RAISE EXCEPTION 'La orden % no existe.', p_folio;
+    END IF;
+
+    --Valida que la cantidad sea mayor a cero
+    IF p_cant_prod <= 0 THEN
+        RAISE EXCEPTION 'La cantidad debe ser mayor a 0.';
+    END IF;
+
+    --iserta producto en la orden y se activan los triggers.
+    INSERT INTO detalle_orden (folio, id_producto, cant_prod)
+    VALUES (p_folio, p_id_producto, p_cant_prod);
+
+    RAISE NOTICE 'Producto % agregado correctamente a la orden %.', p_id_producto, p_folio;
+END;
+$$;
