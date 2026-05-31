@@ -6,13 +6,9 @@
 
    En este script se presenta el DDL utilizado para la creación de la base 
    de datos y las tablas definidas del sistema 
-   de restaurante. También se implementan restricciones mediante llaves 
+   del restaurante. También se implementan restricciones mediante llaves 
    primarias (PK), llaves foráneas (FK), restricciones UNIQUE y CHECK, con el 
    propósito de mantener la integridad de la información registrada.
-
-   Este archivo incluye la creación de entidades como empleado, cliente, 
-   producto, categoría, orden, detalle_orden, pago y factura, así como las 
-   tablas correspondientes a subtipos de empleado y atributos multivaluados.
    ============================================================ */
 
 -- LIMPIEZA DE TABLAS
